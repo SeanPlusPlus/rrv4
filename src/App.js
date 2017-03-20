@@ -5,6 +5,7 @@ import {
   Link,
   NavLink,
   Switch,
+  Prompt,
 } from 'react-router-dom';
 
 import './App.css'
@@ -14,6 +15,7 @@ const NavLinks = () => (
     <NavLink exact activeClassName="active" to="/">Home</NavLink>
     <NavLink activeClassName="active" to="/about">About</NavLink>
     <NavLink activeClassName="active" to="/msg">Message</NavLink>
+    <NavLink activeClassName="active" to="/form">Form</NavLink>
   </nav>
 )
 
@@ -33,6 +35,23 @@ const Message = (props) => {
   )
 }
 
+class Form extends React.Component {
+  state = {dirty: false}
+  setDirty = () => this.setState({dirty: true})
+  render() {
+    return(
+      <div>
+        <h1>Form</h1>
+        <input type="text" onInput={this.setDirty} />
+        <Prompt
+          when={this.state.dirty}
+          message="Data will be lost!"
+        />
+      </div>
+    )
+  }
+}
+
 const App = () => (
   <Router>
     <div>
@@ -41,6 +60,7 @@ const App = () => (
         <Route exact path="/" component={Home} />
         <Route path="/about" component={About} />
         <Route path="/msg/:message?" component={Message} />
+        <Route path="/form" component={Form} />
         <Route render={() => <h1>Page not found</h1>} />
       </Switch>
     </div>
