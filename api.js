@@ -10,15 +10,13 @@ app.get('/', function (req, res) {
   })
 })
 
-const insertDocuments = function(db, callback) {
+const insertDocuments = function(db, data, callback) {
 
   // Get the documents collection
   const collection = db.collection('documents');
 
   // Insert some documents
-  collection.insertMany([
-    {a : 1}, {a : 2}, {a : 3}
-  ], function(err, result) {
+  collection.insertMany(data, function(err, result) {
     console.log("Inserted 3 documents into the collection");
     callback(result);
   });
@@ -40,18 +38,20 @@ const findDocuments = function(db, callback) {
 
 app.get('/todos', function (req, res) {
   const description = 'list of todos'
+  const docs = []
   const url = 'mongodb://localhost:27017/myproject'
 
   MongoClient.connect(url, function(err, db) {
     console.log("Connected successfully to server");
-    findDocuments(db, function() {
+    findDocuments(db, function(docs) {
+      res.send({
+        description,
+        docs,
+      })
       db.close();
     });
   });
 
-  res.send({
-    description,
-  })
 })
 
 app.post('/todos', function (req, res) {
@@ -60,7 +60,10 @@ app.post('/todos', function (req, res) {
 
   MongoClient.connect(url, function(err, db) {
     console.log("Connected successfully to server");
-    insertDocuments(db, function() {
+    const data = [
+      {a : 10}, {b : 20}, {c : 30}
+    ]
+    insertDocuments(db, data, function() {
       db.close();
     });
   });
