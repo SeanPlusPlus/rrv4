@@ -1,7 +1,14 @@
 import express from 'express'
-const app = express()
+import bodyParser from 'body-parser'
 import MongoClient from 'mongodb'
 import assert from 'assert'
+
+
+const app = express()
+app.use(bodyParser.json());
+
+const DB_NAME = 'todos'
+const DB_URL = `mongodb://localhost:27017/${DB_NAME}`
 
 app.get('/', function (req, res) {
   const description = 'Hello World!'
@@ -10,67 +17,46 @@ app.get('/', function (req, res) {
   })
 })
 
-const insertDocuments = function(db, data, callback) {
-
-  // Get the documents collection
-  const collection = db.collection('documents');
-
-  // Insert some documents
-  collection.insertMany(data, function(err, result) {
-    console.log("Inserted 3 documents into the collection");
-    callback(result);
-  });
-}
-
 const findDocuments = function(db, callback) {
-
-  // Get the documents collection
-  const collection = db.collection('documents');
-
-  // Find some documents
+  const collection = db.collection(DB_NAME);
   collection.find({}).toArray(function(err, docs) {
     assert.equal(err, null);
-    console.log("Found the following records");
-    console.log(docs)
     callback(docs);
   });
 }
 
 app.get('/todos', function (req, res) {
   const description = 'list of todos'
-  const docs = []
-  const url = 'mongodb://localhost:27017/myproject'
-
-  MongoClient.connect(url, function(err, db) {
-    console.log("Connected successfully to server");
-    findDocuments(db, function(docs) {
+  MongoClient.connect(DB_URL, function(err, db) {
+    findDocuments(db, function(todos) {
       res.send({
         description,
-        docs,
+        todos,
       })
       db.close();
     });
   });
-
 })
 
-app.post('/todos', function (req, res) {
-  const description = 'create todos'
-  const url = 'mongodb://localhost:27017/myproject'
+const insertDocument = function(db, data, callback) {
+  const collection = db.collection(DB_NAME);
+  collection.insertOne(data, function(err, result) {
+    callback();
+  });
+}
 
-  MongoClient.connect(url, function(err, db) {
-    console.log("Connected successfully to server");
-    const data = [
-      {a : 10}, {b : 20}, {c : 30}
-    ]
-    insertDocuments(db, data, function() {
+app.post('/todos', function (req, res) {
+  const url = 'mongodb://localhost:27017/myproject'
+  const data = req.body
+  MongoClient.connect(DB_URL, function(err, db) {
+    insertDocument(db, data, function() {
       db.close();
+      res.send({
+        data,
+      })
     });
   });
 
-  res.send({
-    description,
-  })
 })
 
 app.listen(8080, function () {
