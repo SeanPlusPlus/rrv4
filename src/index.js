@@ -1,12 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { createStore } from 'redux'
+import { applyMiddleware, createStore } from 'redux'
 import { Provider } from 'react-redux'
-import App from './App';
-import './index.css';
-import counter from './reducers'
+import { logger } from 'redux-logger'
+import todoApp from './reducers'
+import App from './App'
+import './index.css'
 
-const store = createStore(counter)
+
+const store = createStore(
+  todoApp,
+  applyMiddleware(logger)
+)
 const rootEl = document.getElementById('root')
 
 const render = () => ReactDOM.render(
