@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   BrowserRouter as Router,
   Route,
@@ -6,8 +6,8 @@ import {
   NavLink,
   Switch,
 } from 'react-router-dom';
-import Counter from './components/Counter'
 import Form from './Form'
+import TodoApp from './TodoApp'
 import './App.css'
 
 const NavLinks = () => (
@@ -16,7 +16,7 @@ const NavLinks = () => (
     <NavLink activeClassName="active" to="/about">About</NavLink>
     <NavLink activeClassName="active" to="/msg">Message</NavLink>
     <NavLink activeClassName="active" to="/form">Form</NavLink>
-    <NavLink activeClassName="active" to="/counter">Counter</NavLink>
+    <NavLink activeClassName="active" to="/todos">Todos</NavLink>
   </nav>
 )
 
@@ -44,6 +44,7 @@ const Message = (props) => {
 }
 
 const getRoutes = (store, onIncrement, onDecrement) => {
+  console.log(store);
   return (
     <div>
       <NavLinks />
@@ -52,13 +53,7 @@ const getRoutes = (store, onIncrement, onDecrement) => {
         <Route path="/about" render={() => <About store={store} />} />
         <Route path="/msg/:message?" component={Message} />
         <Route path="/form" component={Form} />
-        <Route path="/counter" render={() =>
-          <Counter
-            value={store.value}
-            onIncrement={store.onIncrement}
-            onDecrement={store.onDecrement}
-          />
-        }/>
+        <Route path="/todos" component={TodoApp} />
         <Route render={() => <h1>Page not found</h1>} />
       </Switch>
     </div>
