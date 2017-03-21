@@ -1,13 +1,13 @@
 import React from 'react';
 import {
   BrowserRouter as Router,
-  Route ,
+  Route,
   Link,
   NavLink,
   Switch,
-  Prompt,
 } from 'react-router-dom';
-
+import Counter from './components/Counter'
+import Form from './Form'
 import './App.css'
 
 const NavLinks = () => (
@@ -16,54 +16,58 @@ const NavLinks = () => (
     <NavLink activeClassName="active" to="/about">About</NavLink>
     <NavLink activeClassName="active" to="/msg">Message</NavLink>
     <NavLink activeClassName="active" to="/form">Form</NavLink>
+    <NavLink activeClassName="active" to="/counter">Counter</NavLink>
   </nav>
 )
 
 const Home = () => <h1>Home</h1>
 
-const About = () => <h1>About</h1>
+const About = (props) => {
+  console.log(props);
+  return (
+    <h1>About</h1>
+  )
+}
 
 const Message = (props) => {
   return (
     <div>
-      <h1>{props.match.params.message || 'Message Home'}</h1>
-      <ul>
-        <Link to="/msg/foo">foo</Link>
-        <Link to="/msg/bar">bar</Link>
-      </ul>
+      <h1>{props.match.params.message ? `Msg: ${props.match.params.message}` : 'Msg'}</h1>
+      <p>
+        <Link to="/msg/foo">#1 foo</Link>
+      </p>
+      <p>
+        <Link to="/msg/bar">#2 bar</Link>
+      </p>
     </div>
   )
 }
 
-class Form extends React.Component {
-  state = {dirty: false}
-  setDirty = () => this.setState({dirty: true})
-  render() {
-    return(
-      <div>
-        <h1>Form</h1>
-        <input type="text" onInput={this.setDirty} />
-        <Prompt
-          when={this.state.dirty}
-          message="Data will be lost!"
-        />
-      </div>
-    )
-  }
-}
-
-const App = () => (
-  <Router>
+const getRoutes = (store, onIncrement, onDecrement) => {
+  return (
     <div>
       <NavLinks />
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route path="/about" component={About} />
+        <Route path="/about" render={() => <About store={store} />} />
         <Route path="/msg/:message?" component={Message} />
         <Route path="/form" component={Form} />
+        <Route path="/counter" render={() =>
+          <Counter
+            value={store.value}
+            onIncrement={store.onIncrement}
+            onDecrement={store.onDecrement}
+          />
+        }/>
         <Route render={() => <h1>Page not found</h1>} />
       </Switch>
     </div>
+  )
+}
+
+const App = (store, onIncrement, onDecrement) => (
+  <Router>
+    {getRoutes(store, onIncrement, onDecrement)}
   </Router>
 )
 
