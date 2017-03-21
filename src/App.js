@@ -41,8 +41,7 @@ const TodoWrapper = () => (
   </div>
 )
 
-const getRoutes = (store, onIncrement, onDecrement) => {
-  console.log(store);
+const getRoutes = () => {
   return (
     <div>
       <NavLinks />
@@ -57,10 +56,10 @@ const getRoutes = (store, onIncrement, onDecrement) => {
   )
 }
 
-const App = (store, onIncrement, onDecrement) => (
+const App = () => (
   <Router>
-    {getRoutes(store, onIncrement, onDecrement)}
+    {getRoutes()}
   </Router>
 )
 
-export default App;
+export default App
