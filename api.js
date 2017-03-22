@@ -2,12 +2,14 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import MongoClient from 'mongodb'
 import assert from 'assert'
+import cors from 'cors'
 
 
 const app = express()
-app.use(bodyParser.json());
+app.use(bodyParser.json())
+app.use(cors())
 
-const DB_NAME = 'todos'
+const DB_NAME = 'todos2'
 const DB_URL = `mongodb://localhost:27017/${DB_NAME}`
 
 app.get('/', function (req, res) {
