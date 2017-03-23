@@ -11,7 +11,7 @@ import TodoFooter from './components/TodoFooter'
 import AddTodo from './containers/AddTodo'
 import VisibleTodoList from './containers/VisibleTodoList'
 import AsyncApp from './containers/AsyncApp'
-import Messages from './containers/Messages'
+import Message from './containers/Message'
 import './App.css'
 
 const NavLinks = () => (
@@ -21,7 +21,7 @@ const NavLinks = () => (
     <NavLink activeClassName="active" to="/form">Form</NavLink>
     <NavLink activeClassName="active" to="/todos">Todos</NavLink>
     <NavLink activeClassName="active" to="/async">Async</NavLink>
-    <NavLink activeClassName="active" to="/messages">Messages</NavLink>
+    <NavLink activeClassName="active" to="/message">Message</NavLink>
   </nav>
 )
 
@@ -55,7 +55,7 @@ const getRoutes = () => {
         <Route path="/form" component={Form} />
         <Route path="/todos" component={TodoWrapper} />
         <Route path="/async" component={AsyncApp} />
-        <Route path="/messages" component={Messages} />
+        <Route path="/message" component={Message} />
         <Route render={() => <h1>Page not found</h1>} />
       </Switch>
     </div>

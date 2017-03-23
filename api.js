@@ -9,16 +9,19 @@ const app = express()
 app.use(bodyParser.json())
 app.use(cors())
 
-const DB_NAME = 'todos2'
+const DB_NAME = 'messages'
 const DB_URL = `mongodb://localhost:27017/${DB_NAME}`
 
-app.get('/', function (req, res) {
+// api
+app.get('/api', function (req, res) {
   const description = 'Hello World!'
   res.send({
     description,
   })
 })
 
+
+// GET documents
 const findDocuments = function(db, callback) {
   const collection = db.collection(DB_NAME);
   collection.find({}).toArray(function(err, docs) {
@@ -27,19 +30,22 @@ const findDocuments = function(db, callback) {
   });
 }
 
-app.get('/todos', function (req, res) {
-  const description = 'list of todos'
+app.get('/api/messages', function (req, res) {
+  console.log(new Date())
+  const description = 'list of messages'
   MongoClient.connect(DB_URL, function(err, db) {
-    findDocuments(db, function(todos) {
+    findDocuments(db, function(messages) {
       res.send({
         description,
-        todos,
+        messages,
       })
       db.close();
     });
   });
 })
 
+
+// CREATE documents
 const insertDocument = function(db, data, callback) {
   const collection = db.collection(DB_NAME);
   collection.insertOne(data, function(err, result) {
@@ -47,8 +53,7 @@ const insertDocument = function(db, data, callback) {
   });
 }
 
-app.post('/todos', function (req, res) {
-  const url = 'mongodb://localhost:27017/myproject'
+app.post('/api/messages', function (req, res) {
   const data = req.body
   MongoClient.connect(DB_URL, function(err, db) {
     insertDocument(db, data, function() {
@@ -58,9 +63,10 @@ app.post('/todos', function (req, res) {
       })
     });
   });
-
 })
 
+
+// main
 app.listen(8080, function () {
   console.log('Example app listening on port 8080!')
 })

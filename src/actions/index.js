@@ -100,3 +100,52 @@ export function fetchPostsIfNeeded(subreddit) {
     }
   }
 }
+
+
+// messages example
+export const REQUEST_MESSAGES = 'REQUEST_MESSAGES'
+export const RECEIVE_MESSAGES = 'RECEIVE_MESSAGES'
+
+
+function requestMessages() {
+  return {
+    type: REQUEST_MESSAGES,
+    messages: [],
+  }
+}
+
+function receiveMessages(json) {
+  return {
+    type: RECEIVE_MESSAGES,
+    messages: json.messages,
+    messagesReceivedAt: Date.now()
+  }
+}
+
+function fetchMessages() {
+  return dispatch => {
+    dispatch(requestMessages())
+    return fetch('http://localhost:8080/api/messages')
+      .then(response => response.json())
+      .then(json => dispatch(receiveMessages(json)))
+  }
+}
+
+function shouldFetchMessages(state) {
+  const messages = state.messagesInFeed.messages
+  if (!messages) {
+    return true
+  } else if (messages.isFetchingMessages) {
+    return false
+  } else {
+    return messages.didInvalidate
+  }
+}
+
+export function fetchMessagesIfNeeded() {
+  return (dispatch, getState) => {
+    if (shouldFetchMessages(getState())) {
+      return dispatch(fetchMessages())
+    }
+  }
+}
